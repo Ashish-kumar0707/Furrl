@@ -1,30 +1,48 @@
-import React, { useState, useEffect } from 'react';
-
+import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import DisplayItems from "./DisplayItems";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // Fetch the data from the API
-    fetch('https://api.escuelajs.co/api/v1/products')
-      .then(response => response.json())
-      .then(data => setProducts(data))
-      .catch(error => console.error('Error fetching data:', error));
+    const fetchData = async () => {
+      try {
+        const apiUrl = "https://api.furrl.in/api/v2/listing/getListingProducts";
+        const requestData = {
+          input: {
+            page: 1,
+            pageSize: 100,
+            filters: [],
+            id: "#NightFlea",
+            entity: "vibe",
+          },
+        };
+        const response = await axios.post(apiUrl, requestData);
+        setProducts(response?.data?.data?.getListingProducts?.products || []);
+        console.log(response?.data?.data?.getListingProducts?.products);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
-
     <>
-    
-    <div style={{ display: 'flex',flexWrap: 'wrap', gap: '20px'}}>
-      {products.map(product => (
-        <div  key={product.id} style={{width: 'calc(50% - 10px)',padding: '10px'}}>
-          <img  src={product.images[0]} alt={product.title} style={{width: '100%',maxHeight: '200px', objectfit: 'cover'}} />
-          <p  style={{marginTop: '10px',fontWeight: 'bold'}}>{product.title} </p>
-          <p >Price: ${product.price}</p>
-        </div>
-      ))}
-    </div>
+      <div id="main-container" style={{
+        padding: 0,
+        margin: 0,
+        boxSizing: 'border-box'
+      }}>
+        <Box display="grid" gridTemplateColumns="1fr 1fr" gap={1} padding={1}>
+          {products.map((product, index) => (
+            <DisplayItems key={index} product={product}/>
+          ))}
+        </Box>
+      </div>
     </>
   );
 }

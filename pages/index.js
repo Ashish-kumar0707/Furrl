@@ -5,7 +5,11 @@ import Product from '../components/Product'
 import React from 'react'
 export default function Home() {
   return (
-    <div >
+    <div style={{
+        padding: 0,
+        margin: 0,
+        boxSizing: 'border-box'
+    }} >
       <Nav/>
       <Mainpage/>
       <Product/>
